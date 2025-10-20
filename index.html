@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engine Parts Bin Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f5f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1e3d59;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        main {
+            margin: 30px auto;
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3d59;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        .result {
+            margin-top: 20px;
+            background-color: #eef3f7;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        h3 {
+            color: #007bff;
+            margin-top: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #1e3d59;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Engine Parts Bin Calculator</h1>
+    </header>
+
+    <main>
+        <h2>Enter Engine Production Count</h2>
+
+        <label for="hv">Number of HV Engines:</label>
+        <input type="number" id="hv" placeholder="Enter HV engine count">
+
+        <label for="ce">Number of CE Engines:</label>
+        <input type="number" id="ce" placeholder="Enter CE engine count">
+
+        <label for="cv">Number of CV Engines:</label>
+        <input type="number" id="cv" placeholder="Enter CV engine count">
+
+        <button onclick="calculatePartBins()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </main>
+
+    <footer>
+        &copy; 2025 Engine Manufacturing Co.
+    </footer>
+
+    <script>
+        function calculatePartBins() {
+            const hvCount = parseInt(document.getElementById('hv').value) || 0;
+            const ceCount = parseInt(document.getElementById('ce').value) || 0;
+            const cvCount = parseInt(document.getElementById('cv').value) || 0;
+
+            // Parts data: quantity per engine (1) and bin capacity
+            const hvParts = [
+                { name: "b622", qty: 1, binCap: 2 },
+                { name: "b641", qty: 1, binCap: 8 },
+                { name: "b611", qty: 1, binCap: 10 },
+                { name: "b621", qty: 1, binCap: 8 },
+                { name: "b617", qty: 1, binCap: 12 }
+            ];
+
+            const ceParts = [
+                { name: "a604", qty: 1, binCap: 10 },
+                { name: "a605", qty: 1, binCap: 8 },
+                { name: "a607", qty: 1, binCap: 20 },
+                { name: "a606", qty: 1, binCap: 2 },
+                { name: "a603", qty: 1, binCap: 6 }
+            ];
+
+            const cvParts = [
+                { name: "b623", qty: 1, binCap: 5 },
+                { name: "b049", qty: 1, binCap: 25 },
+                { name: "b618", qty: 1, binCap: 8 },
+                { name: "b636", qty: 1, binCap: 24 }
+            ];
+
+            function calcBins(engineCount, parts) {
+                let totalBins = 0;
+                let details = "";
+                parts.forEach(p => {
+                    const totalParts = engineCount * p.qty;
+                    const binsNeeded = Math.ceil(totalParts / p.binCap);
+                    totalBins += binsNeeded;
+                    details += `<li>${p.name}: ${engineCount} × ${p.qty} = ${totalParts} → ${binsNeeded} bins</li>`;
+                });
+                return { totalBins, details };
+            }
+
+            const hv = calcBins(hvCount, hvParts);
+            const ce = calcBins(ceCount, ceParts);
+            const cv = calcBins(cvCount, cvParts);
+            const totalAll = hv.totalBins + ce.totalBins + cv.totalBins;
+
+            document.getElementById('result').innerHTML = `
+        <h3>HV Engine Parts</h3>
+        <ul>${hv.details}</ul>
+        <p><strong>Total HV Bins: ${hv.totalBins}</strong></p>
+
+        <h3>CE Engine Parts</h3>
+        <ul>${ce.details}</ul>
+        <p><strong>Total CE Bins: ${ce.totalBins}</strong></p>
+
+        <h3>CV Engine Parts</h3>
+        <ul>${cv.details}</ul>
+        <p><strong>Total CV Bins: ${cv.totalBins}</strong></p>
+
+        <hr>
+        <h3>Total Bins for All Engines: ${totalAll}</h3>
+      `;
+        }
+    </script>
+
+</body>
+</html>
